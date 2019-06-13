@@ -1,0 +1,11 @@
+SELECT DISTINCT ?germannoun ?synonym WHERE {
+ ?n a <http://www.lexinfo.net/ontology/2.0/lexinfo#Noun> .
+ ?n <http://www.w3.org/ns/lemon/lime#language> "de" .
+ ?n <http://kaiko.getalp.org/dbnary#synonym> ?p .
+ ?p <http://kaiko.getalp.org/dbnary#describes> ?n2 .
+ ?n2 a <http://www.lexinfo.net/ontology/2.0/lexinfo#Noun> .
+ ?n <http://www.w3.org/ns/lemon/ontolex#canonicalForm> ?c .
+ ?c <http://www.w3.org/ns/lemon/ontolex#writtenRep> ?germannoun .
+ ?n2 <http://www.w3.org/ns/lemon/ontolex#canonicalForm> ?c2 .
+ ?c2 <http://www.w3.org/ns/lemon/ontolex#writtenRep> ?synonym .
+}
