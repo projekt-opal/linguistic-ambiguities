@@ -41,6 +41,14 @@ public class Synonyms {
 		return map.keySet();
 	}
 
+	public Set<String> keysLowerCase() {
+		SortedSet<String> set = new TreeSet<>();
+		for (String key : map.keySet()) {
+			set.add(key.toLowerCase());
+		}
+		return set;
+	}
+
 	public int getNumberOfKeys() {
 		return map.size();
 	}

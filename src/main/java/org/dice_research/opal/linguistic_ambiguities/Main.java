@@ -3,6 +3,9 @@ package org.dice_research.opal.linguistic_ambiguities;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.dice_research.opal.linguistic_ambiguities.exceptions.ConfigurationException;
@@ -23,15 +26,36 @@ public class Main {
 
 		Synonyms synonyms = main.getSysnonyms();
 
+		String mcloudTexts = main.getMcloudTexts();
+		String[] mcloudWords = mcloudTexts.split("[^\\p{L}]+");
+
+		SortedSet<String> wordsWithSynonyms = new TreeSet<>();
+		Set<String> synonymKeysLowercase = synonyms.keysLowerCase();
+		for (int i = 0; i < mcloudWords.length; i++) {
+			if (synonymKeysLowercase.contains(mcloudWords[i].toLowerCase())) {
+				wordsWithSynonyms.add(mcloudWords[i]);
+			}
+		}
+
 		// Example run:
-		// Number of keys (words): 6683
-		// Number of values (synonyms): 21663
-		System.out.println("Cache file: " + synonymsFile.getAbsolutePath());
+		// Number of keys (words): 6668
+		// Number of values (synonyms): 21634
+		// mCLOUD words: 71897
+		// Words with synonyms: 584
+		System.out.println("Synonyms cache file: " + synonymsFile.getAbsolutePath());
 		System.out.println("Number of keys   (words):    " + synonyms.getNumberOfKeys());
 		System.out.println("Number of values (synonyms): " + synonyms.getNumberOfValues());
+		System.out.println();
+		System.out.println("mCLOUD cache file: " + mcloudFile.getAbsolutePath());
+		System.out.println("mCLOUD words: " + mcloudWords.length);
+		System.out.println();
+		System.out.println("Words with synonyms: " + wordsWithSynonyms.size());
+		System.out.println();
 
-		String mcloudTexts = main.getMcloudTexts();
-		System.out.println(mcloudTexts);
+		// TODO
+		for (String wordWithSynonyms : wordsWithSynonyms) {
+			System.out.println(wordWithSynonyms);
+		}
 	}
 
 	String getMcloudTexts() throws IOException, ResourceException, ConfigurationException {
