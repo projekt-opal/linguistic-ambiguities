@@ -16,13 +16,23 @@ class OpalTest {
 	public static final int LIMIT = 20;
 
 	@Test
-	void test() throws ResourceException, ConfigurationException {
-		String mcloudTexts = new Opal().setEndpoint(Opal.OPAL_ENDPOINT).getMcloudTexts();
+	void testMcloud() throws ResourceException, ConfigurationException {
+		String texts = new Opal().setEndpoint(Opal.OPAL_ENDPOINT).getMcloudTexts();
 
 		// Not empty
-		assertFalse(mcloudTexts.isEmpty());
+		assertFalse(texts.isEmpty());
 
-		System.out.println(mcloudTexts);
+		System.out.println(texts);
+	}
+
+	@Test
+	void testGovdata() throws ResourceException, ConfigurationException {
+		String texts = new Opal().setEndpoint(Opal.OPAL_ENDPOINT).getGovdataTexts();
+
+		// Not empty
+		assertFalse(texts.isEmpty());
+
+		System.out.println(texts);
 	}
 
 }

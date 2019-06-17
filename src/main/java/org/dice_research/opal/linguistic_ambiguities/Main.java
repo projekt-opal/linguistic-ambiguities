@@ -21,6 +21,7 @@ public class Main {
 
 	static File synonymsFile = new File("synonyms-german.txt");
 	static File mcloudFile = new File("mcloud.txt");
+	static File govdataFile = new File("govdata.txt");
 	static File elasticSearchSynonymFile = new File("synonym.txt");
 
 	/**
@@ -42,15 +43,18 @@ public class Main {
 		}
 
 		// Prepare fulltext-words
-		String mcloudTexts = main.getMcloudTexts();
-		String[] mcloudWords = mcloudTexts.split("[^\\p{L}]+");
+		StringBuilder opalTextBuilder = new StringBuilder();
+		opalTextBuilder.append(main.getOpalTexts(true));
+		opalTextBuilder.append(System.lineSeparator());
+		opalTextBuilder.append(main.getOpalTexts(false));
+		String[] opalWords = opalTextBuilder.toString().split("[^\\p{L}]+");
 
 		// Match synonyms and fulltext-words
 		// Maintain indexes
 		Set<Integer> indexes = new HashSet<Integer>();
-		for (int i = 0; i < mcloudWords.length; i++) {
-			if (synonymKeysLowercase.contains(mcloudWords[i].toLowerCase())) {
-				indexes.add(synonymKeysLowercase.indexOf(mcloudWords[i].toLowerCase()));
+		for (int i = 0; i < opalWords.length; i++) {
+			if (synonymKeysLowercase.contains(opalWords[i].toLowerCase())) {
+				indexes.add(synonymKeysLowercase.indexOf(opalWords[i].toLowerCase()));
 			}
 		}
 
@@ -72,33 +76,52 @@ public class Main {
 		}
 		FileUtils.write(elasticSearchSynonymFile, stringBuilder.toString(), StandardCharsets.UTF_8);
 
-		// Example run:
+		// Example mCLOUD:
 		// Number of keys (words): 6668
 		// Number of values (synonyms): 21634
 		// mCLOUD words: 71897
 		// Words with synonyms: 518
+
+		// Example mCLOUD + govdata:
+		// Number of keys (words): 6668
+		// Number of values (synonyms): 21634
+		// mCLOUD words: 881232
+		// Words with synonyms: 1497
+
 		System.out.println("Synonyms cache file: " + synonymsFile.getAbsolutePath());
 		System.out.println("Number of keys   (words):    " + synonyms.getNumberOfKeys());
 		System.out.println("Number of values (synonyms): " + synonyms.getNumberOfValues());
 		System.out.println();
-		System.out.println("mCLOUD cache file: " + mcloudFile.getAbsolutePath());
-		System.out.println("mCLOUD words: " + mcloudWords.length);
+		System.out.println("OPAL cache file: " + mcloudFile.getAbsolutePath());
+		System.out.println("OPAL words: " + opalWords.length);
 		System.out.println();
 		System.out.println("ElasticSearch synonym file: " + elasticSearchSynonymFile.getAbsolutePath());
 		System.out.println("Words with synonyms: " + indexes.size());
 	}
 
-	String getMcloudTexts() throws IOException, ResourceException, ConfigurationException {
-		if (mcloudFile.exists()) {
-			return FileUtils.readFileToString(mcloudFile, StandardCharsets.UTF_8);
+	String getOpalTexts(boolean mcloud) throws IOException, ResourceException, ConfigurationException {
+		File file;
+		if (mcloud) {
+			file = mcloudFile;
+		} else {
+			file = govdataFile;
+		}
+
+		if (file.exists()) {
+			return FileUtils.readFileToString(file, StandardCharsets.UTF_8);
 		} else {
 			Opal opal = new Opal();
 			opal.setEndpoint(Opal.OPAL_ENDPOINT);
-			String mcloudTexts = opal.getMcloudTexts();
 
-			FileUtils.write(mcloudFile, mcloudTexts, StandardCharsets.UTF_8);
+			String texts;
+			if (mcloud) {
+				texts = opal.getMcloudTexts();
+			} else {
+				texts = opal.getGovdataTexts();
+			}
 
-			return mcloudTexts;
+			FileUtils.write(file, texts, StandardCharsets.UTF_8);
+			return texts;
 		}
 	}
 

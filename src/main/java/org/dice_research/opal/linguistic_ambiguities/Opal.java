@@ -16,6 +16,29 @@ public class Opal extends Endpoint {
 
 	public static final String OPAL_ENDPOINT = "http://opalpro.cs.upb.de:3030/opal/sparql";
 	public static final String RESOURCE_SPARQL_MCLOUD = "sparql-mcloud.txt";
+	public static final String RESOURCE_SPARQL_GOVDATA = "sparql-govdata.txt";
+
+	/**
+	 * Gets govdata texts in OPAL graph
+	 * 
+	 * @throws ResourceException
+	 * @throws ConfigurationException
+	 */
+	public String getGovdataTexts() throws ResourceException, ConfigurationException {
+		String sparqlSelect = Resources.getResourceAsString(RESOURCE_SPARQL_GOVDATA);
+		RDFConnection rdfConnection = getConnection();
+		QueryExecution queryExecution = rdfConnection.query(sparqlSelect);
+		ResultSet resultSet = queryExecution.execSelect();
+		StringBuilder stringBuilder = new StringBuilder();
+		while (resultSet.hasNext()) {
+			QuerySolution querySolution = resultSet.next();
+			stringBuilder.append(querySolution.get("title").asLiteral().getLexicalForm());
+			stringBuilder.append(System.lineSeparator());
+			stringBuilder.append(querySolution.get("description").asLiteral().getLexicalForm());
+			stringBuilder.append(System.lineSeparator());
+		}
+		return stringBuilder.toString();
+	}
 
 	/**
 	 * Gets mCLOUD texts in OPAL graph
