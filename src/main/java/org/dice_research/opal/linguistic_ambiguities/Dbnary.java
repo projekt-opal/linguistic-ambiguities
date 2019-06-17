@@ -60,8 +60,10 @@ public class Dbnary extends Endpoint {
 		int resultCounter = 0;
 		while (resultSet.hasNext()) {
 			QuerySolution querySolution = resultSet.next();
-			synonyms.add(querySolution.get("germannoun").asLiteral().getLexicalForm(),
-					querySolution.get("synonym").asLiteral().getLexicalForm());
+			String key = querySolution.get("germannoun").asLiteral().getLexicalForm();
+			String value = querySolution.get("synonym").asLiteral().getLexicalForm();
+			if (key.length() > 1 && value.length() > 1)
+				synonyms.add(key, value);
 			resultCounter++;
 		}
 		if (resultCounter < limit) {
