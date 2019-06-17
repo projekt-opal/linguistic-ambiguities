@@ -21,7 +21,7 @@ class DbnaryTest {
 
 	@Test
 	void test() throws ResourceException, ConfigurationException {
-		Synonyms synonyms = new Dbnary().setEndpoint(Dbnary.DBNARY_ENDPOINT).setMaximum(LIMIT).getMcloudTexts();
+		Synonyms synonyms = new Dbnary().setEndpoint(Dbnary.DBNARY_ENDPOINT).setMaximum(LIMIT).getSynonyms();
 
 		// Not empty / there should be at least one key
 		assertNotEquals(0, synonyms.getNumberOfKeys());
@@ -39,7 +39,7 @@ class DbnaryTest {
 
 	@Test
 	public void testExportImport() throws ResourceException, ConfigurationException, IOException {
-		Synonyms synonyms = new Dbnary().setEndpoint(Dbnary.DBNARY_ENDPOINT).setMaximum(LIMIT).getMcloudTexts();
+		Synonyms synonyms = new Dbnary().setEndpoint(Dbnary.DBNARY_ENDPOINT).setMaximum(LIMIT).getSynonyms();
 		File testfile = File.createTempFile(this.getClass().getSimpleName(), ".test.tmp");
 		synonyms.export(testfile);
 		Synonyms imported = Synonyms.importFile(testfile);

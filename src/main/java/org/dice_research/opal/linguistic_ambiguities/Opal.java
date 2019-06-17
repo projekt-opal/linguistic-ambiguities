@@ -39,4 +39,9 @@ public class Opal extends Endpoint {
 		return stringBuilder.toString();
 	}
 
+	@Override
+	public Opal setEndpoint(String endpoint) {
+		super.setEndpoint(endpoint);
+		return this;
+	}
 }

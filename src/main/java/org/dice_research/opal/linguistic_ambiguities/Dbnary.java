@@ -78,4 +78,10 @@ public class Dbnary extends Endpoint {
 		this.max = max;
 		return this;
 	}
+
+	@Override
+	public Dbnary setEndpoint(String endpoint) {
+		super.setEndpoint(endpoint);
+		return this;
+	}
 }
